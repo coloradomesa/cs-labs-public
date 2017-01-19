@@ -6,6 +6,7 @@ create and manage issues. This is the public repo for sharing public code, recei
 Main resources:
 
 https://crl.coloradomesa.edu/ - main computer resource lab hub
+
 Click [HERE](https://github.com/coloradomesa/cs-labs-public/wiki) to view the wiki.
 
 
