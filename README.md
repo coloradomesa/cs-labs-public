@@ -14,5 +14,5 @@ Contacts:
 
 * Warren MacEvoy [wmacevoy@coloradomesa.edu](mailto:wmacevoy@coloradomesa.edu) - Lab Supervisor
 * Joel Cressy - [jtcressy@mavs.coloradomesa.edu](mailto:jtcressy@mavs.coloradomesa.edu) - Lab Admin
-* Josh Mathews - [joshfeltonm@gmail.com](mailto:joshfeltonm@gmail.com) - Assistant Lab Admin
+* Josh Mathews - [joshfeltonm@gmail.com](mailto:joshfeltonm@gmail.com) - Lab Admin
 * Bishal Khadaka - [bkhadaka2@mavs.coloradomesa.edu](mailto:bkhadaka2@mavs.coloradomesa.edu) - Lab Admin in Training
