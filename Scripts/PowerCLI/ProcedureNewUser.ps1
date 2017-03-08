@@ -27,8 +27,8 @@ if(Connect-VIServer vcenter.crl.coloradomesa.edu)
     #}
     $NewUserPrincipal = $ADNetBIOSName + "\" + $NewUser
     Write-Host "Press enter to accept defaults in [] or enter custom amount"
-    if(($RAMLimit = Read-Host -Prompt 'Input max RAM usage in MB [$DefaultRAM]') -eq ''){$RAMLimit = $DefaultRAM}
-    if(($CPULimit = Read-Host -Prompt 'Input max CPU usage in MHz [$DefaultCPU]') -eq ''){$CPULimit = $DefaultCPU}
+    if(($RAMLimit = Read-Host -Prompt 'Input max RAM usage in MB ['$DefaultRAM']') -eq ''){$RAMLimit = $DefaultRAM}
+    if(($CPULimit = Read-Host -Prompt 'Input max CPU usage in MHz ['$DefaultCPU']') -eq ''){$CPULimit = $DefaultCPU}
     
     #Locate containing folder/resource pool
     $UsersResourcePool = Get-ResourcePool -Location VMServs -Name Users
