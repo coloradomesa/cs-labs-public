@@ -19,11 +19,11 @@ if(Connect-VIServer vcenter.crl.coloradomesa.edu)
         break
     }
     #check if user exists
-    if((Get-ADUser -LDAPFilter "(sAMAccountName=$NewUser)") -eq $Null)
-    {
-        Write-Host "ERR: User does not exist"
-        break
-    }
+    #if((Get-ADUser -LDAPFilter "(sAMAccountName=$NewUser)") -eq $Null)
+    #{
+    #    Write-Host "ERR: User does not exist"
+    #    break
+    #}
     $NewUserPrincipal = $ADNetBIOSName + "\" + $NewUser
     Write-Host "Press enter to accept defaults in [] or enter custom amount"
     if(($RAMLimit = Read-Host -Prompt 'Input max RAM usage in MB [$DefaultRAM]') -eq ''){$RAMLimit = $DefaultRAM}
