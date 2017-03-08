@@ -3,6 +3,7 @@ if(!(Get-Module PowerCLI*)){
     #import powercli modules if not already imported
     Get-Module -ListAvailable PowerCLI* | Import-Module
 }
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
 #Editable Variables
 $DefaultRAM = "8192"
 $DefaultCPU = "20000"
