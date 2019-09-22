@@ -67,7 +67,7 @@ function state_install() {
     sudo snap install conda --beta    
     sudo snap install octave --beta
     sudo snap install vscode --classic
-    set state docker
+    set_state docker
 }
 
 function state_docker() {
