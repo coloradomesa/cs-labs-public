@@ -44,6 +44,7 @@ function state_install() {
 	emacs \
 	git \
 	openssh-server \
+	open-vm-tools-desktop \
 	software-properties-common \
 	vim \
 	# eol
