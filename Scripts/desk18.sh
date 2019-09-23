@@ -5,8 +5,27 @@ then
     echo $USER cannot execute sudo - please use an admin user account
     exit 1
 fi
+config_dir="$HOME/.config/cs.coloradomesa.edu"
+state_file="$config_dir/state.txt"
+script_file="$config_dir/desk18.sh"
+script_backup="$config_dir/desk18.sh-"
+script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh"
 
-state_file="$HOME/.config/cs.coloradomesa.edu/state.txt"
+wget -O "$script_backup" "$script_git"
+ok=false
+if [ -f "$script_file" ]
+then
+    if diff -q "$script_file" "$script_backup"
+    then
+	ok=true
+    fi
+fi
+if [ "$ok" != "true" ]
+then
+    echo "new version found, restarting..."
+    cp "$script_backup" "$script_file"
+    exec /bin/bash -x "$script_file"
+fi
 
 function set_state() {
     if [ ! -w $state_file ]
