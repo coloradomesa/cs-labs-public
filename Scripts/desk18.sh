@@ -6,6 +6,7 @@ then
     exit 1
 fi
 config_dir="$HOME/.config/cs.coloradomesa.edu"
+mkdir -p "$config_dir"
 state_file="$config_dir/state.txt"
 script_file="$config_dir/desk18.sh"
 script_backup="$config_dir/desk18.sh-"
