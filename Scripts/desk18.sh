@@ -66,7 +66,7 @@ function state_base_install() {
 }
 
 function state_kivy() {
-    sudo add-apt-repository ppa:kivy-team/kivy
+    sudo add-apt-repository -y ppa:kivy-team/kivy
     sudo apt-get update
     sudo apt install -y kivy
     set_state chrome
@@ -144,7 +144,7 @@ EOF
 
 function state_docker() {
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
     sudo apt update
     sudo apt install -y docker-ce
     set_state halt
