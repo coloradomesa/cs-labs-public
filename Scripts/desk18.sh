@@ -71,6 +71,44 @@ function state_install() {
     set_state docker
 }
 
+function state_lxd() {
+local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
+cat >"$preseed" <<EOF
+config: {}
+networks:
+- config:
+    ipv4.address: auto
+    ipv6.address: auto
+  description: ""
+  managed: false
+  name: lxdbr0
+  type: ""
+storage_pools:
+- config:
+    size: 15GB
+  description: ""
+  name: default
+  driver: zfs
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      nictype: bridged
+      parent: lxdbr0
+      type: nic
+    root:
+      path: /
+      pool: default
+      type: disk
+  name: default
+cluster: null
+EOF
+  sudo lxd init --preseed "$preseed"
+  set_state docker
+}
+
 function state_docker() {
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
@@ -78,6 +116,23 @@ function state_docker() {
     sudo apt install -y docker-ce
     set_state halt
 }
+
+if [ $# -gt 0 ]
+then
+    for state in "$@"
+    do
+	if [ "$state" = "..." ]
+	then
+	    break
+	fi
+	set_state "$state"
+	state_$state
+    done
+    if [ "$state" != "..." ]
+    then
+	exit 0
+    fi
+fi
 
 while true
 do
