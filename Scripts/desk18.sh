@@ -45,7 +45,7 @@ function state_reload() {
     then
 	echo "new version found, restarting..."
 	cp "$script_backup" "$script_file"
-	exec /bin/bash -x "$script_file"
+	exec /bin/bash -x "$script_file" "$@"
     fi
 }
 
