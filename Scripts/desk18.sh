@@ -11,6 +11,24 @@ script_file="$config_dir/desk18.sh"
 script_backup="$config_dir/desk18.sh-"
 script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh"
 
+wget -O "$script_backup" "$script_git"
+ok=false
+if [ -f "$script_file" ]
+then
+    if diff -q "$script_file" "$script_backup"
+    then
+	ok=true
+    fi
+fi
+
+if [ "$ok" != "true" ]
+then
+    echo "new version found, restarting..."
+    cp "$script_backup" "$script_file"
+    sleep 4
+    exec /bin/bash -x "$script_file" "$@"
+fi
+
 function set_state() {
     if [ ! -w $state_file ]
     then
@@ -25,32 +43,8 @@ function get_state() {
 
 
 function state_start() {
-    set_state reload
-}
-
-function reload() {
-    wget -O "$script_backup" "$script_git"
-    ok=false
-    if [ -f "$script_file" ]
-    then
-	if diff -q "$script_file" "$script_backup"
-	then
-	    ok=true
-	fi
-    fi
-
     set_state base_install
-
-    if [ "$ok" != "true" ]
-    then
-	echo "new version found, restarting..."
-	cp "$script_backup" "$script_file"
-	sleep 4
-	exec /bin/bash -x "$script_file" "$@"
-    fi
 }
-
-reload
 
 function state_base_install() {
     sudo apt install -y rng-tools
@@ -67,6 +61,13 @@ function state_base_install() {
 	software-properties-common \
 	vim \
 	# eol
+    set_state kivy
+}
+
+function state_kivy() {
+    sudo add-apt-repository ppa:kivy-team/kivy
+    sudo apt-get update
+    sudo apt install -y kivy
     set_state chrome
 }
 
