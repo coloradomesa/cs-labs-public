@@ -11,22 +11,6 @@ script_file="$config_dir/desk18.sh"
 script_backup="$config_dir/desk18.sh-"
 script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh"
 
-wget -O "$script_backup" "$script_git"
-ok=false
-if [ -f "$script_file" ]
-then
-    if diff -q "$script_file" "$script_backup"
-    then
-	ok=true
-    fi
-fi
-if [ "$ok" != "true" ]
-then
-    echo "new version found, restarting..."
-    cp "$script_backup" "$script_file"
-    exec /bin/bash -x "$script_file"
-fi
-
 function set_state() {
     if [ ! -w $state_file ]
     then
@@ -39,20 +23,33 @@ function get_state() {
     test -r "$state_file" && cat "$state_file" || echo "start"
 }
 
+
 function state_start() {
-    set_state chrome
+    set_state reload
 }
 
-function state_chrome() {
-    pushd "$HOME/Downloads"
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
-    sudo dpkg -i google-chrome-stable_current_amd64.deb
-    popd
-    set_state install
+function state_reload() {
+    wget -O "$script_backup" "$script_git"
+    ok=false
+    if [ -f "$script_file" ]
+    then
+	if diff -q "$script_file" "$script_backup"
+	then
+	    ok=true
+	fi
+    fi
+
+    set_state base_install
+
+    if [ "$ok" != "true" ]
+    then
+	echo "new version found, restarting..."
+	cp "$script_backup" "$script_file"
+	exec /bin/bash -x "$script_file"
+    fi
 }
 
-
-function state_install() {
+function state_base_install() {
     sudo apt install -y rng-tools
 
     sudo apt install -y \
@@ -67,7 +64,18 @@ function state_install() {
 	software-properties-common \
 	vim \
 	# eol
+    set_state chrome
+}
 
+function state_chrome() {
+    pushd "$HOME/Downloads"
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+    sudo dpkg -i google-chrome-stable_current_amd64.deb
+    popd
+    set_state install
+}
+
+function state_install() {
     sudo apt install -y \
 	codeblocks \
 	cmake \
@@ -86,13 +94,12 @@ function state_install() {
     sudo snap install conda --beta    
     sudo snap install octave --beta
     sudo snap install code --classic
-    sudo snap install lxd
-    set_state docker
+    set_state lxd
 }
 
 function state_lxd() {
-local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
-cat >"$preseed" <<EOF
+    local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
+    cat >"$preseed" <<EOF
 config: {}
 networks:
 - config:
