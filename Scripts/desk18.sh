@@ -61,7 +61,7 @@ function state_base_install() {
 	    open-vm-tools-desktop
     fi
 
-    sudo apt install -y 
+    sudo apt install -y \
 	apt-transport-https \
 	build-essential \
 	ca-certificates \
