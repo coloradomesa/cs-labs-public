@@ -131,7 +131,7 @@ profiles:
   name: default
 cluster: null
 EOF
-  sudo lxd init --preseed "$preseed"
+  sudo lxd init --preseed <"$preseed"
   set_state docker
 }
 
