@@ -135,6 +135,8 @@ profiles:
 cluster: null
 EOF
   sudo lxd init --preseed <"$preseed"
+  sudo adduser $USER lxd
+  newgrp lxd
   set_state docker
 }
 
