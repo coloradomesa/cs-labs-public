@@ -28,7 +28,7 @@ function state_start() {
     set_state reload
 }
 
-function state_reload() {
+function reload() {
     wget -O "$script_backup" "$script_git"
     ok=false
     if [ -f "$script_file" ]
@@ -45,9 +45,12 @@ function state_reload() {
     then
 	echo "new version found, restarting..."
 	cp "$script_backup" "$script_file"
+	sleep 4
 	exec /bin/bash -x "$script_file" "$@"
     fi
 }
+
+reload
 
 function state_base_install() {
     sudo apt install -y rng-tools
