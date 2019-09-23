@@ -50,7 +50,7 @@ function state_start() {
 function state_base_install() {
     sudo apt install -y rng-tools
 
-    sudo apt install -y \
+    sudo apt install -y -o Dpkg::Options::=--force-confnew \
 	apt-transport-https \
 	build-essential \
 	ca-certificates \
