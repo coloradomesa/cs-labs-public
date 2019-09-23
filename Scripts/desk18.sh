@@ -66,7 +66,7 @@ function state_install() {
     sudo snap install vlc
     sudo snap install conda --beta    
     sudo snap install octave --beta
-    sudo snap install vscode --classic
+    sudo snap install code --classic
     sudo snap install lxd
     set_state docker
 }
