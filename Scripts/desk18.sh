@@ -149,7 +149,6 @@ EOF
   sudo snap install lxd
   sudo lxd init --preseed <"$preseed"
   sudo adduser $USER lxd
-  newgrp lxd
   set_state docker
 }
 
