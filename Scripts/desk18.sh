@@ -48,9 +48,20 @@ function state_start() {
 }
 
 function state_base_install() {
-    sudo apt install -y rng-tools
+    sudo apt install -y rng-tools virt-what
 
-    sudo apt install -y -o Dpkg::Options::=--force-confnew \
+    if sudo virt-what | grep virtualbox
+    then
+	sudo apt install -y virtualbox-guest-dkms
+    fi
+
+    if sudo virt-what | grep vmware
+    then
+	sudo apt install -y -o Dpkg::Options::=--force-confnew \
+	    open-vm-tools-desktop
+    fi
+
+    sudo apt install -y 
 	apt-transport-https \
 	build-essential \
 	ca-certificates \
@@ -58,7 +69,6 @@ function state_base_install() {
 	emacs \
 	git \
 	openssh-server \
-	open-vm-tools-desktop \
 	software-properties-common \
 	vim \
 	# eol
