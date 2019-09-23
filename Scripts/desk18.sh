@@ -30,6 +30,18 @@ then
     exec /bin/bash -x "$script_file" "$@"
 fi
 
+while ! sudo apt update
+do
+    echo "waiting 10 seconds to retry..."
+    sleep 10
+done
+
+while ! sudo apt upgrade -y
+do
+    echo "waiting 10 seconds to retry..."
+    sleep 10
+done
+
 function set_state() {
     if [ ! -w $state_file ]
     then
