@@ -239,6 +239,10 @@ function state_install() {
        then
 	   exit 1
        fi
+       if ! sudo snap install node --classic --channel=10
+       then
+	   exit 1
+       fi
        set_state lxd
 }
 
