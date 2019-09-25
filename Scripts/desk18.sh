@@ -220,6 +220,7 @@ function state_install() {
     if ! sudo snap install vlc
     then
 	exit 1
+    fi
     sudo snap install conda --beta    
     sudo snap install octave --beta
     sudo snap install code --classic
