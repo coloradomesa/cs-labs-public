@@ -12,6 +12,26 @@ script_file="$config_dir/desk18.sh"
 script_backup="$config_dir/desk18.sh-"
 script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh"
 
+function add_ppa_if_not_exist() {
+# https://askubuntu.com/questions/381152/how-to-check-if-ppa-is-already-added-to-apt-sources-list-in-a-bash-script
+    local ppa
+    local update
+    update=false
+    for ppa in "$@"
+    do
+	if ! egrep -q "^deb .*$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*
+	then
+	    sudo add-apt-repository -y ppa:"$ppa"
+	    update=true
+	fi
+    done
+    if [ $update = true ]
+    then
+	sudo apt update
+    fi
+fi
+}
+
 wget -O "$script_backup" "$script_git"
 ok=false
 if [ -f "$script_file" ]
@@ -88,17 +108,26 @@ function state_base_install() {
 }
 
 function state_kivy() {
-    sudo add-apt-repository -y ppa:kivy-team/kivy
-    sudo apt-get update
+    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^deb .*/kivy-team/kivy/"
+    then
+	sudo add-apt-repository -y ppa:kivy-team/kivy
+	sudo apt-get update
+    fi
     sudo apt install -y kivy
     set_state chrome
 }
 
 function state_chrome() {
-    pushd "$HOME/Downloads"
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
-    sudo dpkg -i google-chrome-stable_current_amd64.deb
-    popd
+    if ! dpkg-query -W -f='${Status} ${Version}\n' google-chrome-stable | grep -q "install ok"
+    then
+	pushd "$HOME/Downloads"
+	if [ ! -f google-chrome-stable_current_amd64.deb ]
+	then
+	    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+	fi
+	sudo dpkg -i google-chrome-stable_current_amd64.deb
+	popd
+    fi
     set_state install
 }
 
@@ -125,8 +154,10 @@ function state_install() {
 }
 
 function state_lxd() {
-    local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
-    cat >"$preseed" <<EOF
+    if !lxc profile device list default | grep -q "eth0"
+    then
+	local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
+	cat >"$preseed" <<EOF
 config: {}
 networks:
 - config:
@@ -158,16 +189,27 @@ profiles:
   name: default
 cluster: null
 EOF
-  sudo snap install lxd
-  sudo lxd init --preseed <"$preseed"
-  sudo adduser $USER lxd
-  set_state docker
+	sudo snap install lxd
+	sudo lxd init --preseed <"$preseed"
+	sudo adduser $USER lxd
+    fi
+    
+    set_state docker
 }
 
 function state_docker() {
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-    sudo apt update
+    if ! apt-key list | grep docker 
+    then
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    fi
+    
+    local deb
+    deb="deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^$deb"
+    then
+	sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+	sudo apt update
+    fi
     sudo apt install -y docker-ce
     set_state halt
 }
