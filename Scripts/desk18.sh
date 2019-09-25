@@ -94,11 +94,15 @@ function state_base_install() {
         exit 1
     fi
 
-    if [ ! -f ~/.ssh/id_rsa ]
-    then
-        /bin/rm -rf ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
-        ssh-keygen -q -t rsa -N "" -f ~/.ssh/id_rsa
-    fi
+#
+# clones would have duplicate keys...
+#
+#    if [ ! -f ~/.ssh/id_rsa ]
+#    then
+#        /bin/rm -rf ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
+#        ssh-keygen -q -t rsa -N "" -f ~/.ssh/id_rsa
+#    fi
+#
     set_state mav_mount
 }
 
