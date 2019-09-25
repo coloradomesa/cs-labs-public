@@ -289,13 +289,10 @@ EOF
 function state_docker() {
     if [ $(apt-key export "Docker Release (CE deb) <docker@docker.com>" | wc -c) = "0" ]
     then
-	echo curl...
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     fi
     
-    local deb
-    deb="deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^$deb" | grep -q "$deb"
+    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^deb" | grep -q "download.docker.com"
     then
 	sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 	sudo apt update
