@@ -75,25 +75,31 @@ function state_base_install() {
     if sudo virt-what | grep vmware
     then
 	sudo apt install -y -o Dpkg::Options::=--force-confnew \
-	    open-vm-tools-desktop
+	     open-vm-tools-desktop
     fi
 
     if ! sudo apt install -y \
-	apt-transport-https \
-	build-essential \
-	ca-certificates \
-	cifs-utils \
-	curl \
-	emacs \
-	git \
-	openssh-server \
-	software-properties-common \
-	vim \
-	# eol
-    then
-	exit 1
+	 apt-transport-https \
+	 build-essential \
+	 ca-certificates \
+	 cifs-utils \
+	 curl \
+	 emacs \
+	 git \
+	 openssh-server \
+	 software-properties-common \
+	 vim \
+	 # eol
+	 then
+       exit 1
     fi
-    set_state mav_mount
+
+       if [ ! -f ~/.ssh/id_rsa ]
+       then
+	   /bin/rm -rf ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
+	   ssh-keygen -q -t rsa -N "" -f ~/.ssh/id_rsa
+       fi
+       set_state mav_mount
 }
 
 function state_mav_mount() {
@@ -128,8 +134,8 @@ sudo umount ~/s
 mkdir -p ~/s
 sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //sharefs.coloradomesa.edu/share3 ~/s
 EOF
-chmod +x ~/bin/mav_mount
-set_state bell
+    chmod +x ~/bin/mav_mount
+    set_state bell
 }
 
 function state_bell() {
@@ -143,19 +149,19 @@ EOF
 
 function state_gstreamer() {
     if ! sudo apt-get install -y \
-	libgstreamer1.0-0 \
-	gstreamer1.0-plugins-base \
-	gstreamer1.0-plugins-good \
-	gstreamer1.0-plugins-bad \
-	gstreamer1.0-plugins-ugly \
-	gstreamer1.0-libav \
-	gstreamer1.0-doc \
-	gstreamer1.0-tools \
-	# eol
-    then
-	exit 1
+	 libgstreamer1.0-0 \
+	 gstreamer1.0-plugins-base \
+	 gstreamer1.0-plugins-good \
+	 gstreamer1.0-plugins-bad \
+	 gstreamer1.0-plugins-ugly \
+	 gstreamer1.0-libav \
+	 gstreamer1.0-doc \
+	 gstreamer1.0-tools \
+	 # eol
+	 then
+       exit 1
     fi
-    set_state kivy
+       set_state kivy
 }
 
 
@@ -194,41 +200,50 @@ function state_chrome() {
 
 function state_install() {
     if ! sudo apt install -y \
-	audacity \
-	codeblocks \
-	cmake \
-	clang \
-	default-jdk \
-	geany \
-	inkscape \
-	pylint3 \
-	wxmaxima \
-	xclip \
-	# eol
-    then
-	exit 1
+	 audacity \
+	 codeblocks \
+	 cmake \
+	 clang \
+	 default-jdk \
+	 geany \
+	 inkscape \
+	 pylint3 \
+	 wxmaxima \
+	 xclip \
+	 # eol
+	 then
+       exit 1
     fi
 
-    if ! sudo snap install netbeans --classic
-    then
-	exit 1
-    fi
-    if ! sudo snap install gimp
-    then
-	exit 1
-    fi
-    if ! sudo snap install vlc
-    then
-	exit 1
-    fi
-    sudo snap install conda --beta    
-    sudo snap install octave --beta
-    sudo snap install code --classic
-    set_state lxd
+       if ! sudo snap install netbeans --classic
+       then
+	   exit 1
+       fi
+       if ! sudo snap install gimp
+       then
+	   exit 1
+       fi
+       if ! sudo snap install vlc
+       then
+	   exit 1
+       fi
+       if ! sudo snap install conda --beta
+       then
+	   exit 1
+       fi
+       if ! sudo snap install octave --beta
+       then
+	   exit 1
+       fi
+       if ! sudo snap install code --classic
+       then
+	   exit 1
+       fi
+       set_state lxd
 }
 
 function state_lxd() {
-    if !lxc profile device list default | grep -q "eth0"
+    if ! lxc profile device list default | grep -q "eth0"
     then
 	local preseed="$HOME/.config/cs.coloradomesa.edu/lxd.preseed.txt"
 	cat >"$preseed" <<EOF
@@ -272,14 +287,15 @@ EOF
 }
 
 function state_docker() {
-    if ! apt-key list | grep docker 
+    if [ $(apt-key export "Docker Release (CE deb) <docker@docker.com>" | wc -c) = "0" ]
     then
+	echo curl...
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     fi
     
     local deb
     deb="deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^$deb"
+    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^$deb" | grep -q "$deb"
     then
 	sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 	sudo apt update
