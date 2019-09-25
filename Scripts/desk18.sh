@@ -282,50 +282,50 @@ profiles:
         type: disk
         name: default
         cluster: null
-        EOF
+EOF
         sudo snap install lxd
         sudo lxd init --preseed <"$preseed"
         sudo adduser $USER lxd
-        fi
+    fi
         
-        set_state docker
-        }
+    set_state docker
+}
 
-        function state_docker() {
-            if [ $(apt-key export "Docker Release (CE deb) <docker@docker.com>" | wc -c) = "0" ]
-            then
-                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-            fi
-            
-            if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^deb" | grep -q "download.docker.com"
-            then
-                sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-                sudo apt update
-            fi
-            sudo apt install -y docker-ce
-            set_state halt
-        }
+function state_docker() {
+    if [ $(apt-key export "Docker Release (CE deb) <docker@docker.com>" | wc -c) = "0" ]
+    then
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    fi
+    
+    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^deb" | grep -q "download.docker.com"
+    then
+        sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+        sudo apt update
+    fi
+    sudo apt install -y docker-ce
+    set_state halt
+}
 
-        if [ $# -gt 0 ]
-        then
-            for state in "$@"
+if [ $# -gt 0 ]
+then
+    for state in "$@"
             do
-                if [ "$state" = "..." ]
-                then
-                    break
-                fi
-                set_state "$state"
-                state_$state
-            done
-            if [ "$state" != "..." ]
-            then
-                exit 0
-            fi
+        if [ "$state" = "..." ]
+        then
+            break
         fi
+        set_state "$state"
+        state_$state
+    done
+    if [ "$state" != "..." ]
+    then
+        exit 0
+    fi
+fi
 
-        while true
-        do
-            state=$(get_state)
-            if [ $state = halt ] ; then break ; fi
-            state_$state
-        done
+while true
+do
+    state=$(get_state)
+    if [ $state = halt ] ; then break ; fi
+    state_$state
+done
