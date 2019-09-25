@@ -1,0 +1,28 @@
+#!/bin/bash
+if [ "$MAV_USER" = "" ]
+then
+    echo -n "mav username: "
+    read MAV_USER
+fi
+
+if [ "$MAV_PASS" = "" ]
+then
+    echo -n "password: "
+    read -s MAV_PASS
+fi
+
+sudo umount ~/f
+mkdir -p ~/f
+sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //homefs.coloradomesa.edu/Home/$MAV_USER ~/f
+
+sudo umount ~/k
+mkdir -p ~/k
+sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //homefs.coloradomesa.edu/courses ~/k
+
+sudo umount ~/r
+mkdir -p ~/r
+sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //sharefs.coloradomesa.edu/share ~/r
+
+sudo umount ~/s
+mkdir -p ~/s
+sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //sharefs.coloradomesa.edu/share3 ~/s
