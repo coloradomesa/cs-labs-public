@@ -122,21 +122,43 @@ then
     read -s MAV_PASS
 fi
 
-sudo umount ~/f
-mkdir -p ~/f
-sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //homefs.coloradomesa.edu/Home/$MAV_USER ~/f
+if ! apt-cache policy cifs-utils | grep -q "Installed: (none)"
+then
+    echo "installing missing cifs tools..."
+    sudo apt install -y cifs-utils
+fi
 
-sudo umount ~/k
-mkdir -p ~/k
-sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //homefs.coloradomesa.edu/courses ~/k
+if ! apt-cache policy smbclient | grep -q "Installed: (none)"
+then
+    echo "installing missing smbclient..."
+    sudo apt install -y smbclient
+fi
 
-sudo umount ~/r
-mkdir -p ~/r
-sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //sharefs.coloradomesa.edu/share ~/r
+if ! timeout 4 smbmount -L homefs.coloradomesa.edu >/dev/null
+then
+  echo "cannot access Colorado Mesa share folders."
+  exit 1
+fi
 
-sudo umount ~/s
-mkdir -p ~/s
-sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid //sharefs.coloradomesa.edu/share3 ~/s
+
+for locmnt in \
+    $HOME/cmu/f://homefs.coloradomesa.edu/Home/$MAV_USER \
+    $HOME/cmu/k://homefs.coloradomesa.edu/courses \
+    $HOME/cmu/r://sharefs.coloradomesa.edu/share \
+    $HOME/cmu/s://sharefs.coloradomesa.edu/share3 \
+    #eol
+do
+  loc=${locmnt%%:*}
+  mnt=${locmnt#*:}
+  host=${mnt#//}
+  host=${host%%/*}
+  sudo umount $loc 2>/dev/null
+  sudo mkdir -p $loc
+  if timeout 4 smbmount -L $host >/dev/null
+  then
+      sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid $mnt $loc
+  fi
+done
 EOF
 chmod +x ~/bin/mav_mount
 set_state bell
