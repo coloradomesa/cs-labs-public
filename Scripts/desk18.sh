@@ -122,19 +122,13 @@ then
     read -s MAV_PASS
 fi
 
-if ! apt-cache policy cifs-utils | grep -q "Installed: (none)"
+if apt-cache policy cifs-utils | grep -q "Installed: (none)"
 then
     echo "installing missing cifs tools..."
     sudo apt install -y cifs-utils
 fi
 
-if ! apt-cache policy smbclient | grep -q "Installed: (none)"
-then
-    echo "installing missing smbclient..."
-    sudo apt install -y smbclient
-fi
-
-if ! timeout 4 smbmount -L homefs.coloradomesa.edu >/dev/null
+if ! timeout 4 ping -c 1 homefs.coloradomesa.edu >/dev/null
 then
   echo "cannot access Colorado Mesa share folders."
   exit 1
@@ -154,10 +148,7 @@ do
   host=${host%%/*}
   sudo umount $loc 2>/dev/null
   sudo mkdir -p $loc
-  if timeout 4 smbmount -L $host >/dev/null
-  then
-      sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid $mnt $loc
-  fi
+  sudo mount -t cifs -o username="$MAV_USER",password="$MAV_PASS",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid $mnt $loc
 done
 EOF
 chmod +x ~/bin/mav_mount
