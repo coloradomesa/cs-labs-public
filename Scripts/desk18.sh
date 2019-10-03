@@ -269,29 +269,24 @@ function state_conda() {
 	$conda config --set auto_activate_base false
 	local pyversion=3.7
 	echo y | $conda create --name py python=$pyversion
-	(
-	    source ~/.bashrc; 
-	    $conda activate py; 
-	    echo y | $conda install -c conda-forge jupyterlab 
-	)
+	bash -i -c "
+	    conda activate py
+	    echo y | $conda install -c conda-forge jupyterlab
+	"
 	echo y | $conda create --name cpp python=$pyversion
-	(
-	    source ~/.bashrc;
-	    hash -r
-	    $conda activate cpp; 
-	    echo y | $conda install -c conda-forge jupyterlab 
-	    echo y | $conda install -c conda-forge xeus-cling
-	)
+	bash -i -c "
+	    conda activate cpp
+	    echo y | conda install -c conda-forge jupyterlab
+	    echo y | conda install -c conda-forge xeus-cling
+	"
 	echo y | $conda create --name js python=$pyversion
-	(
-	    source ~/.bashrc;
-	    bash -r
-	    $conda activate js; 
-	    echo y | $conda install -c conda-forge jupyterlab 
+	bash -i -c "
+	    conda activate js
+	    echo y | $conda install -c conda-forge jupyterlab
 	    echo y | $conda install -c conda-forge nodejs
 	    npm install -g ijavascript
 	    ijsinstall
-	)
+	"
     fi
     set_state wine
 }
