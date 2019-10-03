@@ -168,30 +168,13 @@ function state_gstreamer() {
     if ! sudo apt-get install -y \
         libgstreamer1.0-0 \
         gstreamer1.0-plugins-base \
-        gstreamer1.0-plugins-good \
+        gstreamer1.0
         gstreamer1.0-plugins-bad \
         gstreamer1.0-plugins-ugly \
         gstreamer1.0-libav \
         gstreamer1.0-doc \
         gstreamer1.0-tools \
         # eol
-    then
-        exit 1
-    fi
-    set_state kivy
-}
-
-
-function state_kivy() {
-    if ! cat /etc/apt/sources.list /etc/apt/sources.list.d/* | egrep "^deb .*/kivy-team/kivy/"
-    then
-        if ! sudo add-apt-repository -y ppa:kivy-team/kivy
-        then
-            exit 1
-        fi
-        sudo apt-get update
-    fi
-    if ! sudo apt install -y kivy
     then
         exit 1
     fi
@@ -288,22 +271,24 @@ function state_conda() {
 	echo y | $conda create --name py python=$pyversion
 	(
 	    source ~/.bashrc; 
-	    conda activate py; 
-	    echo y | conda install -c conda-forge jupyterlab 
+	    $conda activate py; 
+	    echo y | $conda install -c conda-forge jupyterlab 
 	)
 	echo y | $conda create --name cpp python=$pyversion
 	(
-	    source ~/.bashrc; 
-	    conda activate cpp; 
-	    echo y | conda install -c conda-forge jupyterlab 
-	    echo y | conda install -c conda-forge xeus-cling
+	    source ~/.bashrc;
+	    hash -r
+	    $conda activate cpp; 
+	    echo y | $conda install -c conda-forge jupyterlab 
+	    echo y | $conda install -c conda-forge xeus-cling
 	)
 	echo y | $conda create --name js python=$pyversion
 	(
-	    source ~/.bashrc; 
-	    conda activate js; 
-	    echo y | conda install -c conda-forge jupyterlab 
-	    echo y | conda install -c conda-forge nodejs
+	    source ~/.bashrc;
+	    bash -r
+	    $conda activate js; 
+	    echo y | $conda install -c conda-forge jupyterlab 
+	    echo y | $conda install -c conda-forge nodejs
 	    npm install -g ijavascript
 	    ijsinstall
 	)
@@ -334,14 +319,15 @@ function state_wine() {
 	then
 	    exit 1
 	fi
-	if ! sudo apt install --install-recommends winehq-stable
+	if ! sudo apt install -y --install-recommends winehq-stable
 	then
 	    exit 1
 	fi
     fi
-    set_state lxd
+    set_state docker
 }
 
+# skipped
 function state_lxd() {
     if ! lxc profile device list default | grep -q "eth0"
     then
