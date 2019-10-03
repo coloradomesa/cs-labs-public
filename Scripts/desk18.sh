@@ -364,7 +364,7 @@ profiles:
         name: default
         cluster: null
 EOF
-        sudo snap install lxd
+        sudo apt install lxd
         sudo lxd init --preseed <"$preseed"
         sudo adduser $USER lxd
     fi
