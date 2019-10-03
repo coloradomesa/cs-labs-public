@@ -282,8 +282,8 @@ function state_conda() {
 	echo y | $conda create --name js python=$pyversion
 	bash -i -c "
 	    conda activate js
-	    echo y | $conda install -c conda-forge jupyterlab
-	    echo y | $conda install -c conda-forge nodejs
+	    echo y | conda install -c conda-forge jupyterlab
+	    echo y | conda install -c conda-forge nodejs
 	    npm install -g ijavascript
 	    ijsinstall
 	"
