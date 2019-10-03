@@ -245,10 +245,6 @@ function state_install() {
     then
         exit 1
     fi
-    if ! sudo snap install conda --beta
-    then
-        exit 1
-    fi
     if ! sudo snap install octave --beta
     then
         exit 1
@@ -260,6 +256,88 @@ function state_install() {
     if ! sudo snap install node --classic --channel=10
     then
         exit 1
+    fi
+    set_state conda
+}
+
+function state_conda() {
+#
+#    does not work...
+#
+#    if ! sudo snap install conda --beta
+#    then
+#        exit 1
+#    fi
+    if [ ! -d ~/.conda ]
+    then
+	pushd ~/Downloads
+	local version=Anaconda3-2019.07-Linux-x86_64.sh
+	local conda=$HOME/anaconda3/bin/conda
+	
+	if [ ! -f $version ]
+	then
+	    wget https://repo.anaconda.com/archive/$version
+	fi
+	mkdir ~/.conda
+	bash $version -b
+	echo y | $conda update -n root conda
+	echo y | $conda update --all
+	$conda init bash
+	$conda config --set auto_activate_base false
+	local pyversion=3.7
+	echo y | $conda create --name py python=$pyversion
+	(
+	    source ~/.bashrc; 
+	    conda activate py; 
+	    echo y | conda install -c conda-forge jupyterlab 
+	)
+	echo y | $conda create --name cpp python=$pyversion
+	(
+	    source ~/.bashrc; 
+	    conda activate cpp; 
+	    echo y | conda install -c conda-forge jupyterlab 
+	    echo y | conda install -c conda-forge xeus-cling
+	)
+	echo y | $conda create --name js python=$pyversion
+	(
+	    source ~/.bashrc; 
+	    conda activate js; 
+	    echo y | conda install -c conda-forge jupyterlab 
+	    echo y | conda install -c conda-forge nodejs
+	    npm install -g ijavascript
+	    ijsinstall
+	)
+    fi
+    set_state wine
+}
+
+function state_wine() {
+    if ! which wine
+    then
+	pushd ~/Downloads
+	if ! sudo dpkg --add-architecture i386
+	then
+	    exit 1
+	fi
+	/bin/rm -rf winehq.key
+	wget -nc https://dl.winehq.org/wine-builds/winehq.key
+	if ! sudo apt-key add winehq.key
+	then
+	    exit 1
+	fi
+	if ! sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
+	then
+	    exit 1
+	fi
+
+	if ! sudo apt update
+	then
+	    exit 1
+	fi
+	if ! sudo apt install --install-recommends winehq-stable
+	then
+	    exit 1
+	fi
     fi
     set_state lxd
 }
