@@ -254,7 +254,7 @@ function state_conda() {
     if [ ! -d ~/.conda ]
     then
 	pushd ~/Downloads
-	local version=Anaconda3-2019.07-Linux-x86_64.sh
+	local version=Anaconda3-2020.02-Linux-x86_64.sh
 	local conda=$HOME/anaconda3/bin/conda
 	
 	if [ ! -f $version ]
@@ -288,7 +288,7 @@ function state_conda() {
 	    ijsinstall
 	"
     fi
-    set_state wine
+    set_state docker
 }
 
 function state_wine() {
