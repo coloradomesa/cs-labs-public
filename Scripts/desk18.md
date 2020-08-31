@@ -39,7 +39,29 @@ The desk18 script is intended to install the following software inside an ubuntu
 * anaconda - py prebuilt py3 venv (conda activate py)
 * anaconda - js prebuilt node venv (conda activate js)
 * anaconda - cpp prebuilt c++ venv (conda activate cpp)
-* wine - windows emulation layer
 * docker - lightweight virtualization (works in a vm)
 
 The install script is [desk18.sh](desk18.sh) which CS faculty are welcome to contribute to or suggest changes.
+
+# VMWare Install (Fusion)
+
+Create a base image
+- (+) new VM
+- install from image (first big button)
+- Choose ubuntu-18.04.5-desktop-amd64.iso, "continue"
+- "use easy install", Display Name: mav, user: mav, password: rick, "continue"
+- "cusomize settings" save as "desk18"
+- notes: mav/rick, HDD: 120GB, USB: 3.1, Enable Hypervisor
+- hdd: 120GB
+- USB: 3.1
+- Hardware Version: 14
+- Boot
+- after install shutdown, save snapshop "base"
+wget https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh
+bash desk18.sh start ...
+- shutdown
+- save as snapshot
+
+---
+For Virtual Box see the google Doc [Installing Ubuntu 18.04 Desktop in VirtualBox at Colorado Mesa](https://docs.google.com/document/d/1kmjY_8B1UuRr4IMsJefEGnq92zuq7Y9UJCvUJeIj94A/edit#)
+  
