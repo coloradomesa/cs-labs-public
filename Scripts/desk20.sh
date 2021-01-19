@@ -216,10 +216,11 @@ function state_install() {
         exit 1
     fi
 
-    if ! sudo snap install netbeans --classic
-    then
-        exit 1
-    fi
+#    if ! sudo snap install netbeans --classic
+#    then
+#        exit 1
+#    fi
+
     if ! sudo snap install gimp
     then
         exit 1
@@ -291,6 +292,7 @@ function state_conda() {
     set_state docker
 }
 
+# skipped
 function state_wine() {
     if ! which wine
     then
@@ -318,6 +320,7 @@ function state_wine() {
 	then
 	    exit 1
 	fi
+	popd
     fi
     set_state docker
 }
@@ -379,6 +382,50 @@ function state_docker() {
         sudo apt update
     fi
     sudo apt install -y docker-ce docker-compose
+    set_state veracrypt
+}
+
+function state_veracrypt() {
+    VERACRYPT_VER=1.24-Update7
+    VERACRYPT_VER=1.24-Update7
+    VERACRYPT_ver=$(echo $VERACRYPT_VER | sed -e 's/\(.*\)/\L\1/')
+    VERACRYPT_DEB=veracrypt-$VERACRYPT_VER-Ubuntu-20.04-amd64.deb
+    if ! which veracrypt
+    then
+        if ! -f ~/Downloads/$VERACRYPT_DEB
+        then
+            (cd ~/Downloads && wget https://launchpad.net/veracrypt/trunk/$VERAC\
+RYPT_ver/+download/$VERACRYPT_DEB)
+        fi
+        if ! sudo dpkg -i ~/Downloads/$VERACRYPT_DEB
+        then
+            exit 1
+        fi
+    fi
+    VERACRYPT_ver=$(echo $VERACRYPT_VER | sed -e 's/\(.*\)/\L\1/')
+    VERACRYPT_DEB=veracrypt-$VERACRYPT_VER-Ubuntu-20.04-amd64.deb
+    if ! which veracrypt
+    then
+	if ! -f ~/Downloads/$VERACRYPT_DEB
+	then
+   	    (cd ~Downloads && wget https://launchpad.net/veracrypt/trunk/$VERACRYPT_ver/+download/$VERACRYPT_DEB)
+	fi
+	if ! sudo dpkg -i ~/Downloads/$VERACRYPT_DEB
+        then
+            exit 1
+        fi
+    fi
+    set_state exfat
+}
+
+function state_exfat() {
+  
+    if ! which dumpexfat
+    then
+	# https://itectec.com/ubuntu/ubuntu-20-04-and-exfat/
+	sudo apt install -y exfat-utils
+	sudo apt remove -y exfat-fuse
+    fi
     set_state halt
 }
 
