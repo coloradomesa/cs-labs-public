@@ -402,19 +402,6 @@ RYPT_ver/+download/$VERACRYPT_DEB)
             exit 1
         fi
     fi
-    VERACRYPT_ver=$(echo $VERACRYPT_VER | sed -e 's/\(.*\)/\L\1/')
-    VERACRYPT_DEB=veracrypt-$VERACRYPT_VER-Ubuntu-20.04-amd64.deb
-    if ! which veracrypt
-    then
-	if ! -f ~/Downloads/$VERACRYPT_DEB
-	then
-   	    (cd ~Downloads && wget https://launchpad.net/veracrypt/trunk/$VERACRYPT_ver/+download/$VERACRYPT_DEB)
-	fi
-	if ! sudo dpkg -i ~/Downloads/$VERACRYPT_DEB
-        then
-            exit 1
-        fi
-    fi
     set_state exfat
 }
 

@@ -40,6 +40,8 @@ The desk18 script is intended to install the following software inside an ubuntu
 * anaconda - js prebuilt node venv (conda activate js)
 * anaconda - cpp prebuilt c++ venv (conda activate cpp)
 * docker - lightweight virtualization (works in a vm)
+* veracrypt - truecrypt maintained version (encrypted volumes)
+* exfat - large volume support
 
 The install script is [desk18.sh](desk18.sh) which CS faculty are welcome to contribute to or suggest changes.
 
@@ -48,17 +50,17 @@ The install script is [desk18.sh](desk18.sh) which CS faculty are welcome to con
 Create a base image
 - (+) new VM
 - install from image (first big button)
-- Choose ubuntu-18.04.5-desktop-amd64.iso, "continue"
+- Choose ubuntu-20.04.5-desktop-amd64.iso, "continue"
 - "use easy install", Display Name: mav, user: mav, password: rick, "continue"
-- "cusomize settings" save as "desk18"
+- "cusomize settings" save as "desk20"
 - notes: mav/rick, HDD: 120GB, USB: 3.1, Enable Hypervisor
 - hdd: 120GB
 - USB: 3.1
 - Hardware Version: 14
 - Boot
 - after install shutdown, save snapshop "base"
-wget https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh
-bash desk18.sh start ...
+wget https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk20.sh
+bash desk20.sh start ...
 - shutdown
 - save as snapshot
 

@@ -378,7 +378,7 @@ function state_docker() {
         sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
         sudo apt update
     fi
-    sudo apt install -y docker-ce
+    sudo apt install -y docker-ce docker-compose
     set_state halt
 }
 
