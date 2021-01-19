@@ -280,14 +280,7 @@ function state_conda() {
 	    echo y | conda install -c conda-forge jupyterlab
 	    echo y | conda install -c conda-forge xeus-cling
 	"
-	echo y | $conda create --name js python=$pyversion
-	bash -i -c "
-	    conda activate js
-	    echo y | conda install -c conda-forge jupyterlab
-	    echo y | conda install -c conda-forge nodejs
-	    npm install -g ijavascript
-	    ijsinstall
-	"
+	echo y | $conda create --name r r-recommended r-irkernel jupyterlab
     fi
     set_state docker
 }
