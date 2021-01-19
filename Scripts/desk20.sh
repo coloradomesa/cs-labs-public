@@ -8,9 +8,9 @@ fi
 config_dir="$HOME/.config/cs.coloradomesa.edu"
 mkdir -p "$config_dir"
 state_file="$config_dir/state.txt"
-script_file="$config_dir/desk18.sh"
-script_backup="$config_dir/desk18.sh-"
-script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk18.sh"
+script_file="$config_dir/desk20.sh"
+script_backup="$config_dir/desk20.sh-"
+script_git="https://raw.githubusercontent.com/coloradomesa/cs-labs-public/master/Scripts/desk20.sh"
 
 # download latest version and restart if different
 /bin/rm -rf "$script_backup"
